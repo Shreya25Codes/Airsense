@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AirSense – Smart fan monitoring</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="top">
+    <div>
+      <h1>AirSense</h1>
+      <p class="sub">Smart fan monitoring</p>
+    </div>
+    <span class="chip" id="statusChip">Simulation – all good</span>
+  </header>
+
+  <noscript><p class="warn">AirSense needs JavaScript to work. Please turn it on and reload the page.</p></noscript>
+
+  <main class="grid">
+
+    <!-- The fan: the main thing to look at -->
+    <section class="card fan-card" aria-live="polite">
+      <div class="fan-wrap">
+        <svg id="fan" viewBox="-50 -50 100 100" aria-hidden="true">
+          <g id="blades">
+            <path d="M0 0 C 6 -10, 10 -30, 0 -44 C -10 -30, -6 -10, 0 0Z"/>
+            <path d="M0 0 C 6 -10, 10 -30, 0 -44 C -10 -30, -6 -10, 0 0Z" transform="rotate(90)"/>
+            <path d="M0 0 C 6 -10, 10 -30, 0 -44 C -10 -30, -6 -10, 0 0Z" transform="rotate(180)"/>
+            <path d="M0 0 C 6 -10, 10 -30, 0 -44 C -10 -30, -6 -10, 0 0Z" transform="rotate(270)"/>
+          </g>
+          <circle r="6" class="hub"/>
+        </svg>
+      </div>
+      <div class="fan-info">
+        <p class="label">Fan level right now</p>
+        <p class="level"><span id="levelNum">–</span><span class="of"> / 5</span></p>
+        <span class="badge" id="modeBadge">Automatic</span>
+        <p class="reason" id="reason"></p>
+        <p class="warn" id="warning" hidden></p>
+      </div>
+    </section>
+
+    <!-- Live chart -->
+    <section class="card wide">
+      <h2>The last couple of minutes</h2>
+      <canvas id="chart" role="img" aria-label="Chart of temperature, humidity and fan level over time"></canvas>
+      <p class="note">
+        <span class="key kt"></span>Temperature (10–45 °C) &nbsp;
+        <span class="key kh"></span>Humidity (0–100 %) &nbsp;
+        <span class="key kl"></span>Fan level (1–5)
+      </p>
+    </section>
+
+    <!-- Room conditions (simulated) -->
+    <section class="card">
+      <h2>Room conditions</h2>
+      <div class="field">
+        <div class="row"><label for="temp">Temperature</label><output id="tempOut">29 °C</output></div>
+        <input type="range" id="temp" min="10" max="45" step="0.5" value="29">
+      </div>
+      <div class="field">
+        <div class="row"><label for="hum">Humidity</label><output id="humOut">65 %</output></div>
+        <input type="range" id="hum" min="0" max="100" step="1" value="65">
+      </div>
+      <label class="check">
+        <input type="checkbox" id="disconnect"> Pretend the sensor is unplugged
+      </label>
+      <p class="note">These numbers are simulated. Later they will come from a real ESP32 sensor.</p>
+      <p class="note">Time AirSense takes to decide: <output id="latency">–</output> (this leaves out sensor and hardware delays).</p>
+    </section>
+
+    <!-- Automatic or manual -->
+    <section class="card">
+      <h2>Who is in charge?</h2>
+      <div class="seg" role="group" aria-label="Control mode">
+        <button id="modeAuto" class="on" aria-pressed="true">Automatic</button>
+        <button id="modeManual" aria-pressed="false">Manual</button>
+      </div>
+      <p class="label">Pick a level yourself</p>
+      <div class="levels" id="levels" role="group" aria-label="Manual fan level"></div>
+      <p class="compare" id="compare"></p>
+    </section>
+
+    <!-- Fault injection -->
+    <section class="card">
+      <h2>Try breaking the sensor</h2>
+      <p class="note">Switch on a problem and see how AirSense copes.</p>
+      <div class="btns">
+        <button class="fault" data-fault="noise" aria-pressed="false">Noisy readings</button>
+        <button class="fault" data-fault="spike" aria-pressed="false">Random spikes</button>
+        <button class="fault" data-fault="frozen" aria-pressed="false">Frozen sensor</button>
+      </div>
+      <p class="note" id="sensorStatus"></p>
+    </section>
+
+    <!-- 24-hour replay -->
+    <section class="card">
+      <h2>Replay a whole day</h2>
+      <p class="note">Made-up data, not real measurements. A full day plays in about 15 seconds.</p>
+      <div class="btns">
+        <button class="action" data-scenario="summer">Hot summer day</button>
+        <button class="action" data-scenario="monsoon">Humid monsoon day</button>
+      </div>
+      <p class="summary" id="simTime"></p>
+      <ul class="tests" id="scenarioOut"></ul>
+    </section>
+
+    <!-- Log -->
+    <section class="card">
+      <h2>What the fan has been doing</h2>
+      <button id="exportCsv" class="action secondary">Download as spreadsheet (CSV)</button>
+      <ol class="log" id="log"></ol>
+    </section>
+
+    <!-- Self-checks -->
+    <section class="card">
+      <h2>Self-checks</h2>
+      <div class="btns">
+        <button id="runQuick" class="action">Quick checks</button>
+        <button id="runBig" class="action">100-case test</button>
+        <button id="runSteady" class="action">2-minute steadiness test</button>
+      </div>
+      <p class="summary" id="testSummary"></p>
+      <ul class="tests" id="testList"></ul>
+    </section>
+
+  </main>
+
+  <footer class="foot">
+    AirSense recommends a fan level; it does not drive a real fan yet. The temperature and humidity limits are starting values for testing, not proven settings.
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
