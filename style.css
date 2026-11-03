@@ -1,0 +1,169 @@
+/* AirSense – style.css
+   Colours live in variables at the top, so changing the look is easy. */
+
+:root {
+  --bg: #e6efed;
+  --surface: #f8fbfa;
+  --ink: #12282b;
+  --muted: #536b6d;
+  --line: #c5d6d3;
+  --accent: #0e7a78;
+  --accent-ink: #ffffff;
+  --manual: #b4570a;
+  --warn-bg: #fbe9d0;
+  --warn-ink: #7a3b00;
+  --ok: #17794a;
+  --bad: #b3261e;
+  --font: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Dark mode follows the device setting */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1f21;
+    --surface: #172b2d;
+    --ink: #e4f0ee;
+    --muted: #93adab;
+    --line: #2a4244;
+    --accent: #4fc3bf;
+    --accent-ink: #082123;
+    --manual: #f0a050;
+    --warn-bg: #3d2a10;
+    --warn-ink: #f6c98a;
+    --ok: #5fd39a;
+    --bad: #ff8a80;
+  }
+}
+
+* { box-sizing: border-box; }
+html { height: 100%; }
+
+body {
+  margin: 0 auto;
+  max-width: 1040px;
+  padding: 20px 16px 32px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.5;
+}
+
+/* ----- Header ----- */
+.top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; gap: 12px; }
+h1 { margin: 0; font-size: 1.9rem; letter-spacing: -0.02em; }
+h2 { margin: 0 0 12px; font-size: 1.05rem; }
+.sub { margin: 0; color: var(--muted); }
+
+.chip {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.chip.bad { background: var(--bad); color: var(--bg); border-color: var(--bad); font-weight: 600; }
+.chip.warnchip { background: var(--warn-bg); color: var(--warn-ink); }
+
+/* ----- Layout ----- */
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-width: 0; }
+.wide { grid-column: 1 / -1; }
+.fan-card { grid-column: 1 / -1; display: flex; gap: 28px; align-items: center; }
+
+/* ----- The fan ----- */
+.fan-wrap { flex: 0 0 auto; width: 170px; height: 170px; }
+#fan { width: 100%; height: 100%; }
+#blades { fill: var(--accent); transform-origin: 0 0; }
+#fan .hub { fill: var(--ink); }
+#blades.spin { animation: spin var(--spin, 2s) linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { #blades.spin { animation: none; } }
+
+.fan-info { min-width: 0; }
+.label { margin: 0 0 4px; font-size: 0.85rem; color: var(--muted); }
+.level { margin: 0; font-size: 3.4rem; line-height: 1; font-weight: 700; }
+.level .of { font-size: 1.3rem; font-weight: 400; color: var(--muted); }
+
+.badge {
+  display: inline-block;
+  margin: 10px 0 6px;
+  padding: 2px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.badge.manual { background: var(--manual); color: #fff; }
+
+.reason { margin: 4px 0 0; max-width: 60ch; }
+.warn {
+  margin: 10px 0 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+  max-width: 60ch;
+}
+
+/* ----- Chart ----- */
+#chart { width: 100%; height: 220px; display: block; }
+.key { display: inline-block; width: 18px; height: 4px; margin-right: 6px; vertical-align: middle; border-radius: 2px; }
+.key.kt { background: var(--manual); }
+.key.kh { background: var(--accent); }
+.key.kl { background: var(--ink); }
+
+/* ----- Sliders and text ----- */
+.field { margin-bottom: 14px; }
+.row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+output { font-weight: 600; font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.check { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
+.note { margin: 10px 0 0; font-size: 0.85rem; color: var(--muted); }
+.summary { font-weight: 600; margin: 12px 0 6px; }
+.note + .btns { margin-top: 10px; }
+
+/* ----- Buttons ----- */
+button { font: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.btns { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.action { padding: 9px 16px; border-radius: 8px; border: 0; background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.action:disabled { opacity: 0.5; cursor: not-allowed; }
+.action.secondary { background: transparent; color: var(--accent); border: 1px solid var(--accent); margin-bottom: 10px; }
+
+.seg { display: flex; margin-bottom: 14px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.seg button { flex: 1; padding: 9px 8px; border: 0; background: transparent; color: var(--ink); }
+.seg button.on { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.seg button.on.manual { background: var(--manual); color: #fff; }
+
+.levels { display: flex; gap: 8px; }
+.levels button { flex: 1; padding: 10px 0; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--ink); font-weight: 600; }
+.levels button.sel { background: var(--manual); border-color: var(--manual); color: #fff; }
+.levels button:disabled { opacity: 0.45; cursor: not-allowed; }
+.compare { margin: 12px 0 0; font-size: 0.9rem; color: var(--muted); }
+
+.fault { padding: 8px 14px; border: 1px solid var(--line); border-radius: 8px; background: transparent; color: var(--ink); font-weight: 600; }
+.fault[aria-pressed="true"] { background: var(--bad); border-color: var(--bad); color: var(--bg); }
+
+/* ----- Log and test results ----- */
+.log { margin: 0; padding-left: 20px; font-size: 0.9rem; max-height: 190px; overflow-y: auto; }
+.log li { margin-bottom: 4px; }
+.log:empty::after { content: "Nothing yet."; color: var(--muted); margin-left: -20px; }
+.tests { list-style: none; padding: 0; margin: 0; font-size: 0.85rem; max-height: 190px; overflow-y: auto; }
+.tests li { padding: 3px 0; border-bottom: 1px solid var(--line); }
+.tests .pass { color: var(--ok); }
+.tests .fail { color: var(--bad); font-weight: 600; }
+#scenarioOut { max-height: none; }
+
+.foot { margin-top: 20px; font-size: 0.85rem; color: var(--muted); }
+
+/* ----- Phones ----- */
+@media (max-width: 720px) {
+  .grid { grid-template-columns: 1fr; }
+  .fan-card { flex-direction: column; text-align: center; }
+  .fan-wrap { width: 140px; height: 140px; }
+  .reason, .warn { margin-inline: auto; }
+}
